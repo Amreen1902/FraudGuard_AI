@@ -260,12 +260,6 @@ python -m pytest tests/ -v
 
 ---
 
-## 📹 Video Demo
-
-[▶ Watch on YouTube](#) ← *add link after recording*
-
----
-
 ## 👩‍💻 Author
 
 Built for **Kaggle AI Agents Capstone 2024** — Agents for Business Track.
