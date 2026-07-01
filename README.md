@@ -12,7 +12,7 @@
 
 **Kaggle AI Agents Capstone 2024 — Agents for Business Track**
 
-[Demo Video](#-video-demo) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [Dashboard](#-dashboard)
+[Quick Start](#-quick-start) • [Architecture](#-architecture) • [Dashboard](#-dashboard)
 
 </div>
 
