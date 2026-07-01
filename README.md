@@ -4,13 +4,8 @@
 
 ### Multi-Agent Fraud Detection System
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
-[![XGBoost](https://img.shields.io/badge/XGBoost-ROC--AUC%200.9993-brightgreen)](https://xgboost.readthedocs.io)
-[![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-red?logo=streamlit)](https://streamlit.io)
-[![Gemini](https://img.shields.io/badge/LLM-Gemini%201.5%20Flash-orange?logo=google)](https://aistudio.google.com)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
-**Kaggle AI Agents Capstone 2024 — Agents for Business Track**
+**Kaggle AI Agents Capstone 2026 — Agents for Business Track**
 
 [Quick Start](#-quick-start) • [Architecture](#-architecture) • [Dashboard](#-dashboard)
 
