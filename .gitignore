@@ -1,0 +1,10 @@
+.env
+*.pkl
+data/audit_log.jsonl
+data/transactions.csv
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/
+venv/
+.venv/
