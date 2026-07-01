@@ -1,19 +1,32 @@
-# 🛡️ FraudGuard AI — Multi-Agent Fraud Detection System
+<div align="center">
 
-> **Kaggle AI Agents Capstone 2024 | Agents for Business Track**
+# 🛡️ FraudGuard AI
 
-A production-ready **multi-agent AI system** that detects credit card fraud in real-time using a coordinated pipeline of specialized agents: Feature Engineering → ML Scoring → LLM Explanation → Decision Aggregation → Alerting, all orchestrated by a central agent and backed by an MCP tool server.
+### Multi-Agent Fraud Detection System
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)](https://python.org)
+[![XGBoost](https://img.shields.io/badge/XGBoost-ROC--AUC%200.9993-brightgreen)](https://xgboost.readthedocs.io)
+[![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-red?logo=streamlit)](https://streamlit.io)
+[![Gemini](https://img.shields.io/badge/LLM-Gemini%201.5%20Flash-orange?logo=google)](https://aistudio.google.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+
+**Kaggle AI Agents Capstone 2024 — Agents for Business Track**
+
+[Demo Video](#-video-demo) • [Quick Start](#-quick-start) • [Architecture](#-architecture) • [Dashboard](#-dashboard)
+
+</div>
 
 ---
 
-## 🎯 Problem Statement
+## 📌 Problem Statement
 
-Credit card fraud costs businesses **$32 billion annually**. Traditional rule-based systems suffer from high false positive rates and provide no reasoning behind decisions. FraudGuard AI addresses this by combining:
+Credit card fraud costs businesses **$32 billion annually**. Traditional rule-based systems have high false positive rates and provide **zero reasoning** behind their decisions — making it hard for analysts to act quickly.
 
-- **XGBoost ML model** (ROC-AUC: 0.9993) for accurate fraud scoring
-- **LLM-powered explanations** (Claude API) for human-readable reasoning
-- **Multi-agent coordination** for modular, scalable decision-making
-- **MCP Server** for persistent audit logging and historical query tools
+**FraudGuard AI** solves this with a coordinated multi-agent system that:
+- Detects fraud with **99.3% accuracy** (ROC-AUC: 0.9993)
+- Explains *why* a transaction is suspicious in plain English (Gemini LLM)
+- Logs every decision to an immutable audit trail via MCP Server
+- Provides a real-time interactive dashboard for analysts
 
 ---
 
@@ -23,33 +36,33 @@ Credit card fraud costs businesses **$32 billion annually**. Traditional rule-ba
 Transaction Input (JSON / CSV)
          │
          ▼
-┌─────────────────────┐
-│  Orchestrator Agent │  ← Coordinates the entire pipeline
-└────────┬────────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌──────────┐  ┌──────────────┐
-│ Feature  │  │  ML Scorer   │
-│  Agent   │→ │    Agent     │  ← XGBoost (ROC-AUC 0.9993)
-└──────────┘  └──────┬───────┘
+┌─────────────────────────┐
+│    Orchestrator Agent   │  ← Central coordinator
+└──────────┬──────────────┘
+           │
+     ┌─────┴──────┐
+     ▼             ▼
+┌──────────┐  ┌───────────────┐
+│ Feature  │→ │  ML Scorer    │  ← XGBoost (ROC-AUC 0.9993)
+│  Agent   │  │    Agent      │
+└──────────┘  └──────┬────────┘
                      │
               ┌──────▼────────┐
-              │  Explanation  │
-              │    Agent      │  ← Claude API (LLM reasoning)
+              │  Explanation  │  ← Gemini 1.5 Flash (LLM)
+              │    Agent      │
               └──────┬────────┘
                      │
               ┌──────▼────────┐
-              │   Aggregator  │
-              │    Agent      │  ← Combines all outputs
+              │  Aggregator   │  ← Combines all outputs
+              │    Agent      │
               └──────┬────────┘
                      │
               ┌──────▼────────┐
-              │  Alert Agent  │  ← Issues verdict, logs to audit
+              │  Alert Agent  │  ← Final verdict + audit log
               └──────┬────────┘
                      │
               ┌──────▼────────┐
-              │  MCP Server   │  ← DB queries, audit tools, stats
+              │  MCP Server   │  ← 4 audit/query tools
               └───────────────┘
 ```
 
@@ -57,74 +70,102 @@ Transaction Input (JSON / CSV)
 
 | Agent | Responsibility |
 |---|---|
-| **OrchestratorAgent** | Routes transactions, manages pipeline flow, exposes MCP tools |
+| **OrchestratorAgent** | Routes transactions, manages pipeline, exposes MCP tools |
 | **FeatureAgent** | Validates input, engineers 33 features (log-amount, hour, night flag, V-ratios) |
-| **ScorerAgent** | Runs XGBoost inference, returns fraud probability + risk tier |
-| **ExplanationAgent** | Calls Claude API to generate plain-English fraud reasoning |
-| **AggregatorAgent** | Combines ML score + explanation into a structured audit record |
-| **AlertAgent** | Issues final verdict, writes to append-only JSONL audit log |
-| **MCPServer** | Exposes 4 tools: `query_audit_log`, `get_transaction`, `get_stats`, `flag_for_review` |
+| **ScorerAgent** | Runs XGBoost inference → fraud probability + risk tier |
+| **ExplanationAgent** | Calls Gemini API → plain-English fraud reasoning |
+| **AggregatorAgent** | Combines ML score + explanation → structured audit record |
+| **AlertAgent** | Issues verdict (APPROVE/REVIEW/HOLD/BLOCK), writes to audit log |
+| **MCPServer** | 4 tools: `query_audit_log`, `get_transaction`, `get_stats`, `flag_for_review` |
 
 ---
 
 ## ✅ Kaggle Evaluation Checklist
 
-| Concept | Implementation |
-|---|---|
-| ✅ Multi-agent system (ADK) | 6 specialized agents + Orchestrator |
-| ✅ MCP Server | `tools/mcp_server.py` — 4 audit/query tools |
-| ✅ Deployability | Streamlit dashboard (`streamlit run dashboard/app.py`) |
-| ✅ LLM Integration | Claude API in `agents/explanation_agent.py` |
-| ✅ Security | No API keys in code; `.env` only; audit log immutable |
+| Concept | Where | Status |
+|---|---|---|
+| Multi-agent system | `agents/orchestrator_agent.py` | ✅ 6 agents + Orchestrator |
+| MCP Server | `tools/mcp_server.py` | ✅ 4 audit/query tools |
+| LLM Integration | `agents/explanation_agent.py` | ✅ Gemini 1.5 Flash |
+| Deployability | `dashboard/app.py` | ✅ Streamlit dashboard |
+| Security features | `.env`, `.gitignore`, audit log | ✅ No keys in code |
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone & Install
+### Prerequisites
+- Python 3.10+
+- Git
+
+### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Amreen1902/FraudGuard_AI
+git clone https://github.com/YOUR_USERNAME/fraud-detection-agent
 cd fraud-detection-agent
+```
+
+### 2. Create virtual environment
+
+**Mac / Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**Windows (PowerShell):**
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Set API Key (optional — LLM explanations)
+### 4. Set up API Key (optional — for LLM explanations)
 
 ```bash
+# Copy the example env file
 cp .env.example .env
-# Edit .env and add: ANTHROPIC_API_KEY=your_key_here
 ```
 
-> Without the API key, the system uses rule-based explanations automatically.
-
-### 3. Generate Data & Train Model
-
-```bash
-python data/generate_data.py   # Creates data/transactions.csv
-python models/train.py          # Trains XGBoost, saves to models/
+Edit `.env` and add your **Gemini API key** (free at [aistudio.google.com](https://aistudio.google.com)):
+```
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-### 4. Run the Agent
+> ⚠️ Without the API key the system still works — rule-based explanations are used automatically.
+
+### 5. Generate data & train model
 
 ```bash
-# Demo mode (3 sample transactions)
+python data/generate_data.py    # Creates data/transactions.csv (9,500 rows)
+python models/train.py           # Trains XGBoost, saves to models/
+```
+
+### 6. Run the agent
+
+```bash
+# Demo mode — 3 sample transactions
 python main.py
 
-# Batch mode (20 transactions)
+# Batch mode — analyze N transactions from CSV
 python main.py --batch 20
 
-# Show MCP audit stats
+# MCP audit stats
 python main.py --stats
 ```
 
-### 5. Launch Dashboard
+### 7. Launch dashboard
 
 ```bash
 streamlit run dashboard/app.py
 ```
 
-Open http://localhost:8501 in your browser.
+Open **http://localhost:8501** in your browser.
 
 ---
 
@@ -132,11 +173,26 @@ Open http://localhost:8501 in your browser.
 
 | Metric | Score |
 |---|---|
-| ROC-AUC | **0.9993** |
+| **ROC-AUC** | **0.9993** |
 | Fraud Precision | 0.91 |
 | Fraud Recall | 0.96 |
 | F1 Score | 0.94 |
 | Overall Accuracy | 0.99 |
+
+Trained on 9,500 synthetic transactions (500 fraud, 9,000 legit) with 33 engineered features.
+
+---
+
+## 🖥️ Dashboard
+
+4-page Streamlit dashboard:
+
+| Page | Description |
+|---|---|
+| 📊 Dashboard | KPIs, verdict distribution, risk tier charts, high-risk table |
+| 🔍 Analyze Transaction | Real-time single transaction analysis with presets |
+| 📁 Batch Analysis | Analyze up to 50 transactions at once |
+| 🗄️ Audit Log | MCP-powered query interface with filters |
 
 ---
 
@@ -145,71 +201,71 @@ Open http://localhost:8501 in your browser.
 ```
 fraud-detection-agent/
 ├── agents/
-│   ├── base_agent.py          # Abstract base with logging + error handling
-│   ├── feature_agent.py       # Feature engineering (33 features)
+│   ├── base_agent.py          # Abstract base — logging + error handling
+│   ├── feature_agent.py       # 33 feature engineering
 │   ├── scorer_agent.py        # XGBoost inference + risk tier
-│   ├── explanation_agent.py   # Claude API / rule-based fallback
-│   ├── aggregator_agent.py    # Combines outputs into audit record
-│   ├── alert_agent.py         # Issues verdict, writes audit log
+│   ├── explanation_agent.py   # Gemini API / rule-based fallback
+│   ├── aggregator_agent.py    # Combines outputs → audit record
+│   ├── alert_agent.py         # Final verdict + JSONL audit log
 │   └── orchestrator_agent.py  # Pipeline coordinator
 ├── tools/
-│   └── mcp_server.py          # MCP tool server (4 audit tools)
+│   └── mcp_server.py          # MCP Server — 4 audit tools
 ├── models/
-│   ├── train.py               # XGBoost training script
-│   ├── fraud_model.pkl        # Trained model (generated)
-│   ├── scaler.pkl             # StandardScaler (generated)
-│   └── feature_names.pkl      # Feature list (generated)
+│   └── train.py               # XGBoost training script
 ├── data/
-│   ├── generate_data.py       # Synthetic dataset generator
-│   ├── transactions.csv       # Dataset (generated)
-│   └── audit_log.jsonl        # Append-only audit trail (generated)
+│   └── generate_data.py       # Synthetic dataset generator
 ├── dashboard/
 │   └── app.py                 # Streamlit 4-page dashboard
 ├── tests/
 │   └── test_agents.py         # 20 unit + integration tests
 ├── main.py                    # CLI entry point
 ├── requirements.txt
+├── .env.example
 └── README.md
 ```
 
 ---
 
-## 🔒 Security Features
+## 🔒 Security
 
-- **No API keys in source code** — loaded via `python-dotenv` from `.env`
-- **Audit log is append-only** — decisions are immutable for compliance
-- **Input validation** — FeatureAgent checks all required fields before processing
-- **Error isolation** — each agent wrapped in try/catch; pipeline fails gracefully
+- API keys loaded via `.env` — never hardcoded
+- `.gitignore` excludes `.env`, model files, audit log
+- Audit log is **append-only** for compliance
+- Input validation in FeatureAgent before any processing
+- Each agent isolated with try/catch — pipeline fails gracefully
 
 ---
 
-## 🧪 Running Tests
+## 🧪 Tests
 
 ```bash
 python -m pytest tests/ -v
-# 20 tests — all pass ✅
 ```
+
+20 tests covering all agents — unit + end-to-end integration.
 
 ---
 
-## 🛠️ Technologies Used
+## 🛠️ Tech Stack
 
-- **Python 3.12**
-- **XGBoost** — fraud classification model
-- **Scikit-learn** — preprocessing, evaluation
-- **Anthropic Claude API** — LLM-powered explanations
-- **Streamlit + Plotly** — interactive dashboard
-- **Pandas / NumPy** — data processing
-- **pytest** — testing
+| Technology | Use |
+|---|---|
+| Python 3.10+ | Core language |
+| XGBoost | Fraud classification model |
+| Scikit-learn | Preprocessing + evaluation |
+| Google Gemini 1.5 Flash | LLM explanations |
+| Streamlit + Plotly | Interactive dashboard |
+| Pandas / NumPy | Data processing |
+| pytest | Testing |
 
 ---
 
 ## 📹 Video Demo
 
-[YouTube Link — add after recording]
+[▶ Watch on YouTube](#) ← *add link after recording*
 
 ---
 
 ## 👩‍💻 Author
 
-Built for the **Kaggle AI Agents Capstone 2024** — Agents for Business Track.
+Built for **Kaggle AI Agents Capstone 2024** — Agents for Business Track.
