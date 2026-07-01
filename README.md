@@ -101,7 +101,7 @@ Transaction Input (JSON / CSV)
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/fraud-detection-agent
+git clone https://github.com/Amreen1902/FraudGuard_AI
 cd fraud-detection-agent
 ```
 
